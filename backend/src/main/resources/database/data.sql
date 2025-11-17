@@ -1,1 +1,1 @@
--- Provide SQL scripts here
+INSERT INTO listings VALUES (random_uuid(), '123 Elm St', 'Bob Ross', 'HOUSE', 500000.0);
