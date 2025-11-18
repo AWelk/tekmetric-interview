@@ -1,7 +1,20 @@
 package com.interview.repo;
 
-import com.interview.model.Listing;
+import com.interview.model.db.ListingEntity;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface ListingRepository extends CrudRepository<Listing, UUID> {}
+public interface ListingRepository extends JpaRepository<ListingEntity, UUID> {
+
+  @Query(value = "SELECT l FROM ListingEntity l LEFT JOIN FETCH l.offers")
+  List<ListingEntity> findAllListingsWithOffers();
+
+  @Query(
+      value =
+          "SELECT l FROM ListingEntity l LEFT JOIN FETCH l.offers where l.listingId = :listingId")
+  Optional<ListingEntity> findListingByIdWithOffers(@Param("listingId") UUID listingId);
+}
