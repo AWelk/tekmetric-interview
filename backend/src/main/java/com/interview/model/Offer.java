@@ -13,7 +13,15 @@ public class Offer {
   private UUID offerId;
 
   @Column(name = "offer_price")
-  private Long offerPrice;
+  private Double offerPrice;
 
+  @Column(name = "lender_name")
   private String lenderName;
+
+  @Enumerated(EnumType.STRING)
+  private Status status;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "listing_id", nullable = false)
+  private Listing listing;
 }

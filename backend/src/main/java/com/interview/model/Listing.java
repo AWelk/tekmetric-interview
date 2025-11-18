@@ -21,12 +21,13 @@ public class Listing {
     @Column(name = "agent_name")
     private String agentName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "property_type")
     private PropertyType propertyType;
 
     @Column(name = "listing_price")
-    private Long listingPrice;
+    private Double listingPrice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "listing")
     private List<Offer> offers;
 }

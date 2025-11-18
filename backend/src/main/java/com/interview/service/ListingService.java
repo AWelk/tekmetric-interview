@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ListingService {
 
-    private final ListingRepository listingRepository;
+  private final ListingRepository listingRepository;
 
-    public void getAllListings() {
-        listingRepository.findAll();
-    }
+  public void getAllListings() {
+    listingRepository.findAll();
+  }
 }

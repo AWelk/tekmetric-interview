@@ -1,8 +1,7 @@
 package com.interview.repo;
 
 import com.interview.model.Listing;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import java.util.UUID;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public interface ListingRepository extends ReactiveCrudRepository<Listing, Long> {}
+public interface ListingRepository extends CrudRepository<Listing, UUID> {}
