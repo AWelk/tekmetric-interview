@@ -1,10 +1,9 @@
-package com.interview.model.db;
+package com.interview.model.domain;
 
 import com.interview.model.common.Status;
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.UUID;
+import lombok.Data;
 
 @Entity
 @Table(name = "offers")
@@ -25,7 +24,8 @@ public class OfferEntity {
   @Enumerated(EnumType.STRING)
   private Status status;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "listing_id", nullable = false)
-  private ListingEntity listing;
+  //  @ManyToOne(fetch = FetchType.LAZY)
+  //  @JoinColumn(name = "listing_id", nullable = false)
+  @Column(name = "listing_id")
+  private UUID listingId;
 }

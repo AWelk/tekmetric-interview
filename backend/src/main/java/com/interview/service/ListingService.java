@@ -1,8 +1,9 @@
 package com.interview.service;
 
 import com.interview.mapper.ListingMapper;
-import com.interview.model.db.ListingEntity;
-import com.interview.model.dto.ListingDto;
+import com.interview.model.domain.ListingEntity;
+import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.response.ListingDto;
 import com.interview.repo.ListingRepository;
 import java.util.List;
 import java.util.Optional;
@@ -53,10 +54,23 @@ public class ListingService {
     return executable.get().map(mapper).orElse(null);
   }
 
-  public ListingDto createListing(final ListingDto listingDto) {
-    // TODO ensure incoming ids are ignored
+  public ListingDto createListing(final ListingCreationDto listingCreationDto) {
     // TODO validate incomming request
-    final ListingEntity listingEntity = listingMapper.listingDtoToListingEntity(listingDto);
+    final ListingEntity listingEntity =
+        listingMapper.listingCreationDtoToListingEntity(listingCreationDto);
     return listingMapper.listingEntityToListingDtoPlusOffers(listingRepository.save(listingEntity));
+  }
+
+  public ListingDto putListing(final UUID listingId, final ListingCreationDto listingCreationDto) {
+    final ListingEntity entityToSave =
+        listingRepository
+            .findById(listingId)
+            .map(
+                existingListing ->
+                    listingMapper.listingCreationDto_mergeInto_listingEntry(
+                        existingListing, listingCreationDto))
+            .orElseGet(() -> listingMapper.listingCreationDtoToListingEntity(listingCreationDto));
+
+    return listingMapper.listingEntityToListingDtoPlusOffers(listingRepository.save(entityToSave));
   }
 }

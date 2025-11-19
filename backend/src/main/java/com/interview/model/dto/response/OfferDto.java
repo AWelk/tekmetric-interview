@@ -1,4 +1,4 @@
-package com.interview.model.dto;
+package com.interview.model.dto.response;
 
 import com.interview.model.common.Status;
 import java.util.UUID;

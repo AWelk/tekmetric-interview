@@ -17,3 +17,5 @@ spring:
     init:
       data-locations: classpath:database/data.sql
       mode: always
+  jackson:
+    default-property-inclusion: non_null

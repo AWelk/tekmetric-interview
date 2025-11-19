@@ -1,4 +1,4 @@
-package com.interview.model.db;
+package com.interview.model.domain;
 
 import com.interview.model.common.PropertyType;
 import jakarta.persistence.*;

@@ -1,7 +1,9 @@
 package com.interview.controller;
 
-import com.interview.model.dto.ListingDto;
-import com.interview.model.dto.OfferDto;
+import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.response.ListingDto;
+import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
 import com.interview.service.OfferService;
 import java.util.Set;
@@ -33,8 +35,14 @@ public class ListingController {
   }
 
   @PostMapping
-  public ListingDto createListing(@RequestBody ListingDto listingDto) {
-    return listingService.createListing(listingDto);
+  public ListingDto createListing(@RequestBody ListingCreationDto listingCreationDto) {
+    return listingService.createListing(listingCreationDto);
+  }
+
+  @PutMapping("/{listingId}")
+  public ListingDto putListing(
+      @PathVariable UUID listingId, @RequestBody ListingCreationDto listingCreationDto) {
+    return listingService.putListing(listingId, listingCreationDto);
   }
 
   @GetMapping("/{listingId}/offer")
@@ -45,5 +53,16 @@ public class ListingController {
   @GetMapping("/{listingId}/offer/{offerId}")
   public OfferDto getOfferById(@PathVariable UUID listingId, @PathVariable UUID offerId) {
     return offerService.getOfferById(listingId, offerId);
+  }
+
+  @PostMapping("/{listingId}/offer")
+  public OfferDto createOffer(
+      @PathVariable UUID listingId, @RequestBody OfferCreationDto offerCreationDto) {
+    return offerService.createOffer(listingId, offerCreationDto);
+  }
+
+  @PutMapping("/{listingId}/offer/{offerId}")
+    public OfferDto putOffer(@PathVariable UUID listingId, @PathVariable UUID offerId, @RequestBody OfferCreationDto offerCreationDto) {
+      return offerService.putOffer(listingId, offerId, offerCreationDto);
   }
 }

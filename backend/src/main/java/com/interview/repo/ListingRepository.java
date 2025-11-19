@@ -1,6 +1,6 @@
 package com.interview.repo;
 
-import com.interview.model.db.ListingEntity;
+import com.interview.model.domain.ListingEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

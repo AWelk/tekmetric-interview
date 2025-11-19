@@ -1,0 +1,55 @@
+### GET all listings
+GET http://localhost:8080/listing?includeOffers=true
+
+### GET listing by id
+GET http://localhost:8080/listing/cd8ea630-a940-4b3e-bd70-409a5b797641?includeOffers=true
+
+### Create listing
+POST http://localhost:8080/listing
+Content-Type: application/json
+
+{
+  "address": "9050 AHHH st",
+  "agentName": "Big Boss",
+  "propertyType": "HOUSE",
+  "listingPrice": 300000.0,
+  "offers": [
+    {
+      "offerPrice": 310000.0,
+      "lenderName": "Super Big Finance",
+      "status": "PENDING"
+    },
+    {
+      "offerPrice": 290000.0,
+      "lenderName": "MEh Finance",
+      "status": "CANCELED"
+    }
+  ]
+}
+
+### GET all offers of listing
+GET http://localhost:8080/listing/cd8ea630-a940-4b3e-bd70-409a5b797641/offer
+
+### GET single offer of listing
+GET http://localhost:8080/listing/f0a44040-060e-4c81-a5be-432815b8e1b9/offer/bd4ca36c-a29d-4b67-b011-378963ed9246
+
+### PUT listing
+PUT http://localhost:8080/listing/0a2cdb26-e672-49c8-8e72-35b16bac81be
+Content-Type: application/json
+
+{
+  "address": "9050 AHHH st",
+  "agentName": "Big Boss",
+  "propertyType": "HOUSE",
+  "listingPrice": 300000.0
+}
+
+### Create offer on a listing
+POST http://localhost:8080/listing/2306620e-255a-46e2-bfdd-86547b4e7edd/offer
+Content-Type: application/json
+
+{
+  "offerPrice": 666666.0,
+  "lenderName": "Big Hotdogs",
+  "status": "ACCEPTED"
+}
