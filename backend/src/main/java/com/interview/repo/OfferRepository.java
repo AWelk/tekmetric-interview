@@ -10,11 +10,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface OfferRepository extends JpaRepository<OfferEntity, UUID> {
 
-  @Query(value = "SELECT o FROM OfferEntity o WHERE o.listingId = :listingId")
+  @Query(value = "SELECT o FROM OfferEntity o WHERE o.listing.listingId = :listingId")
   Set<OfferEntity> findByListingId(@Param("listingId") UUID listingId);
 
   @Query(
       value =
-          "SELECT o from OfferEntity o WHERE o.listingId = :listingId and o.offerId = :offerId")
+          "SELECT o from OfferEntity o WHERE o.listing.listingId = :listingId and o.offerId = :offerId")
   Optional<OfferEntity> findByListingAndOfferId(UUID listingId, UUID offerId);
 }

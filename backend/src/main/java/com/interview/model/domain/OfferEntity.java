@@ -1,5 +1,6 @@
 package com.interview.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.interview.model.common.Status;
 import jakarta.persistence.*;
 import java.util.UUID;
@@ -24,8 +25,9 @@ public class OfferEntity {
   @Enumerated(EnumType.STRING)
   private Status status;
 
-  //  @ManyToOne(fetch = FetchType.LAZY)
-  //  @JoinColumn(name = "listing_id", nullable = false)
-  @Column(name = "listing_id")
-  private UUID listingId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listing_id", nullable = false)
+    @JsonIgnore
+//  @Column(name = "listing_id")
+  private ListingEntity listing;
 }

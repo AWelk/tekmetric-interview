@@ -1,6 +1,7 @@
 package com.interview.service;
 
 import com.interview.mapper.OfferMapper;
+import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.OfferDto;
@@ -34,35 +35,42 @@ public class OfferService {
   }
 
   public OfferDto createOffer(final UUID listingId, final OfferCreationDto offerCreationDto) {
-    if (!listingRepository.existsById(listingId)) {
-      throw new RuntimeException("AHHHH");
-    }
+    // TODO handle exception if listing is present
+    final ListingEntity listing = listingRepository.getReferenceById(listingId);
 
-    final OfferEntity entity = offerMapper.offerCreationDto_to_offerEntity(offerCreationDto);
-    entity.setListingId(listingId);
-    return offerMapper.offerEntity_to_offerDto(offerRepository.save(entity));
+    final OfferEntity entityToSave = offerMapper.offerCreationDto_to_offerEntity(offerCreationDto);
+    entityToSave.setListing(listing);
+    return offerMapper.offerEntity_to_offerDto(offerRepository.save(entityToSave));
   }
 
   public OfferDto putOffer(
       final UUID listingId, final UUID offerId, final OfferCreationDto offerCreationDto) {
-    if (!listingRepository.existsById(listingId)) {
-      throw new RuntimeException("AHHHH");
-    }
+    // TODO handle exception if listing is present
+    final ListingEntity listing = listingRepository.getReferenceById(listingId);
 
     final OfferEntity entityToSave =
         offerRepository
             .findById(offerId)
-            .map(
-                existingOffer ->
-                    offerMapper.offerCreationDto_mergeInto_offerEntity(
-                        existingOffer, offerCreationDto))
+            .map(o -> offerMapper.offerCreationDto_mergeInto_offerEntity(o, offerCreationDto))
             .orElseGet(
                 () -> {
-                  final OfferEntity constructedEntity =
+                  final OfferEntity entity =
                       offerMapper.offerCreationDto_to_offerEntity(offerCreationDto);
-                  constructedEntity.setListingId(listingId);
-                  return constructedEntity;
+                  entity.setOfferId(offerId);
+                  return entity;
                 });
+
+    entityToSave.setListing(listing);
     return offerMapper.offerEntity_to_offerDto(offerRepository.save(entityToSave));
+  }
+
+  public OfferDto updateOffer(
+      final UUID listingId, final UUID offerId, final OfferCreationDto offerCreationDto) {
+    return offerRepository
+        .findByListingAndOfferId(listingId, offerId)
+        .map(o -> offerMapper.offerCreationDto_patchInto_offerEntity(o, offerCreationDto))
+        .map(offerRepository::save)
+        .map(offerMapper::offerEntity_to_offerDto)
+        .orElse(null);
   }
 }

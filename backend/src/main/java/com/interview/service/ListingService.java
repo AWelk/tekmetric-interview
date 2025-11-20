@@ -30,10 +30,10 @@ public class ListingService {
 
     if (includeOffers) {
       executable = listingRepository::findAllListingsWithOffers;
-      mapper = listingMapper::listingEntityToListingDtoPlusOffers;
+      mapper = listingMapper::listingEntity_to_listingDtoPlusOffers;
     } else {
       executable = listingRepository::findAll;
-      mapper = listingMapper::listingEntityToListingDto;
+      mapper = listingMapper::listingEntity_to_listingDto;
     }
 
     return executable.get().stream().map(mapper).collect(Collectors.toSet());
@@ -44,11 +44,11 @@ public class ListingService {
     final Function<ListingEntity, ListingDto> mapper;
 
     if (includeOffers) {
-      executable = () -> listingRepository.findById(id);
-      mapper = listingMapper::listingEntityToListingDtoPlusOffers;
-    } else {
       executable = () -> listingRepository.findListingByIdWithOffers(id);
-      mapper = listingMapper::listingEntityToListingDto;
+      mapper = listingMapper::listingEntity_to_listingDtoPlusOffers;
+    } else {
+      executable = () -> listingRepository.findById(id);
+      mapper = listingMapper::listingEntity_to_listingDto;
     }
 
     return executable.get().map(mapper).orElse(null);
@@ -57,8 +57,8 @@ public class ListingService {
   public ListingDto createListing(final ListingCreationDto listingCreationDto) {
     // TODO validate incomming request
     final ListingEntity listingEntity =
-        listingMapper.listingCreationDtoToListingEntity(listingCreationDto);
-    return listingMapper.listingEntityToListingDtoPlusOffers(listingRepository.save(listingEntity));
+        listingMapper.listingCreationD_to_listingEntity(listingCreationDto);
+    return listingMapper.listingEntity_to_listingDtoPlusOffers(listingRepository.save(listingEntity));
   }
 
   public ListingDto putListing(final UUID listingId, final ListingCreationDto listingCreationDto) {
@@ -69,8 +69,22 @@ public class ListingService {
                 existingListing ->
                     listingMapper.listingCreationDto_mergeInto_listingEntry(
                         existingListing, listingCreationDto))
-            .orElseGet(() -> listingMapper.listingCreationDtoToListingEntity(listingCreationDto));
+            .orElseGet(() -> listingMapper.listingCreationD_to_listingEntity(listingCreationDto));
 
-    return listingMapper.listingEntityToListingDtoPlusOffers(listingRepository.save(entityToSave));
+    return listingMapper.listingEntity_to_listingDtoPlusOffers(listingRepository.save(entityToSave));
+  }
+
+  public ListingDto updateListing(
+      final UUID listingId, final ListingCreationDto listingCreationDto) {
+    return listingRepository
+        .findById(listingId)
+        .map(l -> listingMapper.listingCreationDto_patchInto_ListingEntity(l, listingCreationDto))
+        .map(listingRepository::save)
+        .map(listingMapper::listingEntity_to_listingDto)
+        .orElse(null);
+  }
+
+  public void deleteListing(final UUID listingId) {
+      listingRepository.deleteById(listingId);
   }
 }

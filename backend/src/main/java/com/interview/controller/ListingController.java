@@ -62,7 +62,29 @@ public class ListingController {
   }
 
   @PutMapping("/{listingId}/offer/{offerId}")
-    public OfferDto putOffer(@PathVariable UUID listingId, @PathVariable UUID offerId, @RequestBody OfferCreationDto offerCreationDto) {
-      return offerService.putOffer(listingId, offerId, offerCreationDto);
+  public OfferDto putOffer(
+      @PathVariable UUID listingId,
+      @PathVariable UUID offerId,
+      @RequestBody OfferCreationDto offerCreationDto) {
+    return offerService.putOffer(listingId, offerId, offerCreationDto);
+  }
+
+  @PatchMapping("/{listingId}")
+  public ListingDto updateListing(
+      @PathVariable UUID listingId, @RequestBody ListingCreationDto listingCreationDto) {
+    return listingService.updateListing(listingId, listingCreationDto);
+  }
+
+  @PatchMapping("/{listingId}/offer/{offerId}")
+  public OfferDto updateOffer(
+      @PathVariable UUID listingId,
+      @PathVariable UUID offerId,
+      @RequestBody OfferCreationDto offerCreationDto) {
+    return offerService.updateOffer(listingId, offerId, offerCreationDto);
+  }
+
+  @DeleteMapping("/{listingId}")
+    public void deleteListing(@PathVariable UUID listingId) {
+      listingService.deleteListing(listingId);
   }
 }
