@@ -1,4 +1,4 @@
-package com.interview.service;
+package com.interview.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.interview.service.impl.OfferServiceImpl;
+import com.interview.service.OfferService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OfferServiceTest {
+public class OfferServiceImplTest {
 
   @Mock private OfferRepository offerRepository;
   @Mock private OfferMapper offerMapper;

@@ -1,4 +1,4 @@
-package com.interview.service;
+package com.interview.service.impl;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +18,9 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
-import com.interview.service.impl.ListingServiceImpl;
+import com.interview.service.ListingService;
+import com.interview.service.OfferService;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +37,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
-public class ListingServiceTest {
+public class ListingServiceImplTest {
 
   @Mock private OfferService offerService;
   @Mock private ListingRepository listingRepository;
