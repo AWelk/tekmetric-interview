@@ -1,6 +1,7 @@
 package com.interview.controller;
 
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.OfferService;
 import java.util.UUID;
@@ -44,8 +45,8 @@ public class OfferController {
   @PatchMapping("/{offerId}")
   @Operation(summary = "Partially update offer by id")
   public OfferDto updateOffer(
-      @PathVariable UUID offerId, @RequestBody OfferCreationDto offerCreationDto) {
-    return offerService.updateOffer(offerId, offerCreationDto);
+      @PathVariable UUID offerId, @RequestBody OfferPatchDto offerPatchDto) {
+    return offerService.updateOffer(offerId, offerPatchDto);
   }
 
   @DeleteMapping("/{offerId}")

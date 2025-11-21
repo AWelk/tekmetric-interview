@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
 import com.interview.repo.OfferRepository;
@@ -125,13 +126,13 @@ public class OfferControllerIntegrationTest {
 
   @Test
   void updateOffer_returns404_whenOfferNotFound() {
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final OfferPatchDto offerPatchDto = Instancio.create(OfferPatchDto.class);
 
     final ResponseEntity<OfferDto> response =
         restTemplate.exchange(
             OFFER_ID_URI_BUILDER.build(UUID.randomUUID()),
             HttpMethod.PATCH,
-            new HttpEntity<>(offerCreationDto),
+            new HttpEntity<>(offerPatchDto),
             OfferDto.class);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -146,13 +147,13 @@ public class OfferControllerIntegrationTest {
             .create();
     offerEntity = offerRepository.save(offerEntity);
     final UUID offerId = offerEntity.getOfferId();
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final OfferPatchDto offerPatchDto = Instancio.create(OfferPatchDto.class);
 
     final ResponseEntity<OfferDto> response =
         restTemplate.exchange(
             OFFER_ID_URI_BUILDER.build(offerId),
             HttpMethod.PATCH,
-            new HttpEntity<>(offerCreationDto),
+            new HttpEntity<>(offerPatchDto),
             OfferDto.class);
 
     final OfferEntity updatedEntity = offerRepository.findById(offerId).orElseThrow();
@@ -186,10 +187,7 @@ public class OfferControllerIntegrationTest {
 
     final ResponseEntity<Void> response =
         restTemplate.exchange(
-            OFFER_ID_URI_BUILDER.build(offerId),
-            HttpMethod.DELETE,
-            HttpEntity.EMPTY,
-            Void.class);
+            OFFER_ID_URI_BUILDER.build(offerId), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
 
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     assertFalse(offerRepository.existsById(offerId));

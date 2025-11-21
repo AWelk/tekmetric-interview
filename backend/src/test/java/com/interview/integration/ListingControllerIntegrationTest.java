@@ -12,6 +12,7 @@ import com.interview.mapper.OfferMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -289,13 +290,13 @@ public class ListingControllerIntegrationTest {
   @Test
   void updateListing_return404_whenListingNotPresent() {
     final UUID listingId = UUID.randomUUID();
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final ListingPatchDto patchDto = Instancio.create(ListingPatchDto.class);
 
     final ResponseEntity<ListingDto> response =
         restTemplate.exchange(
             LISTING_ID_URI_BUILDER.build(listingId),
             HttpMethod.PATCH,
-            new HttpEntity<>(offerCreationDto),
+            new HttpEntity<>(patchDto),
             ListingDto.class);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -309,7 +310,7 @@ public class ListingControllerIntegrationTest {
                 .ignore(field("listingId"))
                 .ignore(field("offers"))
                 .create());
-    final ListingCreationDto dto = Instancio.create(ListingCreationDto.class);
+    final ListingPatchDto dto = Instancio.create(ListingPatchDto.class);
 
     final ResponseEntity<ListingDto> response =
         restTemplate.exchange(

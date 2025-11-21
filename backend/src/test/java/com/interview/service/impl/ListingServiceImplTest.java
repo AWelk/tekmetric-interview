@@ -14,6 +14,7 @@ import com.interview.exception.ListingNotFoundException;
 import com.interview.mapper.ListingMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -184,20 +185,20 @@ public class ListingServiceImplTest {
   @Test
   void updateListing_patchesEntity_whenIdIsPresent() {
     final UUID listingId = UUID.randomUUID();
-    final ListingCreationDto creationDto = Instancio.create(ListingCreationDto.class);
+    final ListingPatchDto patchDto = Instancio.create(ListingPatchDto.class);
     final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
     final ListingDto dto = Instancio.create(ListingDto.class);
 
     when(listingRepository.findById(listingId)).thenReturn(Optional.of(listingEntity));
-    when(listingMapper.listingCreationDto_patchInto_ListingEntity(listingEntity, creationDto))
+    when(listingMapper.listingPatchDto_patchInto_ListingEntity(listingEntity, patchDto))
         .thenReturn(listingEntity);
     when(listingRepository.save(listingEntity)).thenReturn(listingEntity);
     when(listingMapper.listingEntity_to_listingDto(listingEntity)).thenReturn(dto);
 
-    final ListingDto result = listingService.updateListing(listingId, creationDto);
+    final ListingDto result = listingService.updateListing(listingId, patchDto);
 
     verify(listingRepository).findById(listingId);
-    verify(listingMapper).listingCreationDto_patchInto_ListingEntity(listingEntity, creationDto);
+    verify(listingMapper).listingPatchDto_patchInto_ListingEntity(listingEntity, patchDto);
     verify(listingRepository).save(listingEntity);
     verify(listingMapper).listingEntity_to_listingDto(listingEntity);
     assertSame(dto, result);
@@ -207,12 +208,12 @@ public class ListingServiceImplTest {
   @Test
   void updateListing_throwsListingNotFoundException_whenListingIsNotPresent() {
     final UUID listingId = UUID.randomUUID();
-    final ListingCreationDto creationDto = Instancio.create(ListingCreationDto.class);
+    final ListingPatchDto patchDto = Instancio.create(ListingPatchDto.class);
 
     when(listingRepository.findById(listingId)).thenReturn(Optional.empty());
 
     assertThrows(
-        ListingNotFoundException.class, () -> listingService.updateListing(listingId, creationDto));
+        ListingNotFoundException.class, () -> listingService.updateListing(listingId, patchDto));
   }
 
   @Test

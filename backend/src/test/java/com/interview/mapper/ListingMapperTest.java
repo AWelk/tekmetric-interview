@@ -10,6 +10,7 @@ import com.interview.model.common.PropertyType;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import java.util.List;
@@ -79,27 +80,27 @@ public class ListingMapperTest {
   }
 
   @Test
-  void listingCreationDto_patchInto_ListingEntity_patchesFieldsOntoEntry_whenAllPopulated() {
-    final ListingCreationDto creationDto = Instancio.create(ListingCreationDto.class);
+  void listingPatchDto_patchInto_ListingEntity_patchesFieldsOntoEntry_whenAllPopulated() {
+    final ListingPatchDto patchDto = Instancio.create(ListingPatchDto.class);
     final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
     final UUID originalListingId = listingEntity.getListingId();
     final List<OfferEntity> originalOffers = listingEntity.getOffers();
 
     final ListingEntity result =
-        listingMapper.listingCreationDto_patchInto_ListingEntity(listingEntity, creationDto);
+        listingMapper.listingPatchDto_patchInto_ListingEntity(listingEntity, patchDto);
 
     assertSame(listingEntity, result);
-    assertEquals(creationDto.getAddress(), listingEntity.getAddress());
-    assertEquals(creationDto.getAgentName(), listingEntity.getAgentName());
-    assertEquals(creationDto.getPropertyType(), listingEntity.getPropertyType());
-    assertEquals(creationDto.getListingPrice(), listingEntity.getListingPrice());
+    assertEquals(patchDto.getAddress(), listingEntity.getAddress());
+    assertEquals(patchDto.getAgentName(), listingEntity.getAgentName());
+    assertEquals(patchDto.getPropertyType(), listingEntity.getPropertyType());
+    assertEquals(patchDto.getListingPrice(), listingEntity.getListingPrice());
     assertEquals(originalListingId, listingEntity.getListingId());
     assertEquals(originalOffers, listingEntity.getOffers());
   }
 
   @Test
-  void listingCreationDto_patchInto_ListingEntity_patchesFieldsOntoEntry_whenNonePopulated() {
-    final ListingCreationDto creationDto = new ListingCreationDto();
+  void listingPatchDto_patchInto_ListingEntity_patchesFieldsOntoEntry_whenNonePopulated() {
+    final ListingPatchDto patchDto = new ListingPatchDto();
     final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
     final UUID originalListingId = listingEntity.getListingId();
     final String originalAddress = listingEntity.getAddress();
@@ -109,7 +110,7 @@ public class ListingMapperTest {
     final List<OfferEntity> originalOffers = listingEntity.getOffers();
 
     final ListingEntity result =
-        listingMapper.listingCreationDto_patchInto_ListingEntity(listingEntity, creationDto);
+        listingMapper.listingPatchDto_patchInto_ListingEntity(listingEntity, patchDto);
 
     assertSame(listingEntity, result);
     assertEquals(originalListingId, listingEntity.getListingId());
@@ -121,9 +122,9 @@ public class ListingMapperTest {
   }
 
   @Test
-  void listingCreationDto_patchInto_ListingEntity_patchesFilesOntoEntry_whenSomePopulated() {
-    final ListingCreationDto creationDto = new ListingCreationDto();
-    creationDto.setAddress("new address");
+  void listingPatchDto_patchInto_ListingEntity_patchesFilesOntoEntry_whenSomePopulated() {
+    final ListingPatchDto patchDto = new ListingPatchDto();
+    patchDto.setAddress("new address");
     final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
     final UUID originalListingId = listingEntity.getListingId();
     final String originalAgentName = listingEntity.getAgentName();
@@ -132,11 +133,11 @@ public class ListingMapperTest {
     final List<OfferEntity> originalOffers = listingEntity.getOffers();
 
     final ListingEntity result =
-        listingMapper.listingCreationDto_patchInto_ListingEntity(listingEntity, creationDto);
+        listingMapper.listingPatchDto_patchInto_ListingEntity(listingEntity, patchDto);
 
     assertSame(listingEntity, result);
     assertEquals(originalListingId, listingEntity.getListingId());
-    assertEquals(creationDto.getAddress(), listingEntity.getAddress());
+    assertEquals(patchDto.getAddress(), listingEntity.getAddress());
     assertEquals(originalAgentName, listingEntity.getAgentName());
     assertEquals(originalPropertyType, listingEntity.getPropertyType());
     assertEquals(originalListingPrice, listingEntity.getListingPrice());

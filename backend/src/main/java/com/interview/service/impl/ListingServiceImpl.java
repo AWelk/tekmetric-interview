@@ -4,6 +4,7 @@ import com.interview.exception.ListingNotFoundException;
 import com.interview.mapper.ListingMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -70,10 +71,10 @@ public class ListingServiceImpl implements ListingService {
 
   @Override
   public ListingDto updateListing(
-          final UUID listingId, final ListingCreationDto listingCreationDto) {
+          final UUID listingId, final ListingPatchDto listingPatchDto) {
     return listingRepository
         .findById(listingId)
-        .map(l -> listingMapper.listingCreationDto_patchInto_ListingEntity(l, listingCreationDto))
+        .map(l -> listingMapper.listingPatchDto_patchInto_ListingEntity(l, listingPatchDto))
         .map(listingRepository::save)
         .map(listingMapper::listingEntity_to_listingDto)
         .orElseThrow(() -> new ListingNotFoundException(listingId));

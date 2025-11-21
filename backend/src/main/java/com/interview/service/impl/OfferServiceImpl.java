@@ -5,6 +5,7 @@ import com.interview.mapper.OfferMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.OfferRepository;
 import java.util.List;
@@ -56,10 +57,10 @@ public class OfferServiceImpl implements OfferService {
   }
 
   @Override
-  public OfferDto updateOffer(final UUID offerId, final OfferCreationDto offerCreationDto) {
+  public OfferDto updateOffer(final UUID offerId, final OfferPatchDto offerPatchDto) {
     return offerRepository
         .findById(offerId)
-        .map(o -> offerMapper.offerCreationDto_patchInto_offerEntity(o, offerCreationDto))
+        .map(o -> offerMapper.offerPatchDto_patchInto_offerEntity(o, offerPatchDto))
         .map(offerRepository::save)
         .map(offerMapper::offerEntity_to_offerDto)
         .orElseThrow(() -> new OfferNotFoundException(offerId));

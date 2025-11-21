@@ -14,13 +14,13 @@ import com.interview.mapper.OfferMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.OfferRepository;
+import com.interview.service.OfferService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.interview.service.OfferService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -168,20 +168,20 @@ public class OfferServiceImplTest {
   @Test
   void updateOffer_patchesOffer_whenPresent() {
     final UUID offerId = UUID.randomUUID();
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final OfferPatchDto offerPatchDto = Instancio.create(OfferPatchDto.class);
     final OfferEntity offerEntity = Instancio.create(OfferEntity.class);
     final OfferDto offerDto = Instancio.create(OfferDto.class);
 
     when(offerRepository.findById(offerId)).thenReturn(Optional.of(offerEntity));
-    when(offerMapper.offerCreationDto_patchInto_offerEntity(offerEntity, offerCreationDto))
+    when(offerMapper.offerPatchDto_patchInto_offerEntity(offerEntity, offerPatchDto))
         .thenReturn(offerEntity);
     when(offerRepository.save(offerEntity)).thenReturn(offerEntity);
     when(offerMapper.offerEntity_to_offerDto(offerEntity)).thenReturn(offerDto);
 
-    final OfferDto result = offerService.updateOffer(offerId, offerCreationDto);
+    final OfferDto result = offerService.updateOffer(offerId, offerPatchDto);
 
     verify(offerRepository).findById(offerId);
-    verify(offerMapper).offerCreationDto_patchInto_offerEntity(offerEntity, offerCreationDto);
+    verify(offerMapper).offerPatchDto_patchInto_offerEntity(offerEntity, offerPatchDto);
     verify(offerRepository).save(offerEntity);
     verify(offerMapper).offerEntity_to_offerDto(offerEntity);
     assertSame(offerDto, result);
@@ -191,12 +191,12 @@ public class OfferServiceImplTest {
   @Test
   void updateOffer_throwsOfferNotFoundException_whenOfferIsNotPresent() {
     final UUID offerId = UUID.randomUUID();
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final OfferPatchDto offerPatchDto = Instancio.create(OfferPatchDto.class);
 
     when(offerRepository.findById(offerId)).thenReturn(Optional.empty());
 
     assertThrows(
-        OfferNotFoundException.class, () -> offerService.updateOffer(offerId, offerCreationDto));
+        OfferNotFoundException.class, () -> offerService.updateOffer(offerId, offerPatchDto));
 
     verify(offerRepository).findById(offerId);
     verifyNoMoreInteractions(offerRepository, offerMapper);

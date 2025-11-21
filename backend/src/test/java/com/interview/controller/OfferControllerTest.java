@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.OfferService;
 import java.util.UUID;
@@ -56,14 +57,14 @@ public class OfferControllerTest {
   @Test
   void updateOffer_defersToOfferService() {
     final UUID offerId = UUID.randomUUID();
-    final OfferCreationDto creationDto = new OfferCreationDto();
+    final OfferPatchDto patchDto = new OfferPatchDto();
     final OfferDto offerDto = new OfferDto();
 
-    when(offerService.updateOffer(offerId, creationDto)).thenReturn(offerDto);
+    when(offerService.updateOffer(offerId, patchDto)).thenReturn(offerDto);
 
-    final OfferDto result = controller.updateOffer(offerId, creationDto);
+    final OfferDto result = controller.updateOffer(offerId, patchDto);
 
-    verify(offerService).updateOffer(offerId, creationDto);
+    verify(offerService).updateOffer(offerId, patchDto);
     assertSame(offerDto, result);
   }
 }

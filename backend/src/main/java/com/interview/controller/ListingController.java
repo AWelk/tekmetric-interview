@@ -1,6 +1,7 @@
 package com.interview.controller;
 
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -76,8 +77,8 @@ public class ListingController {
   @PatchMapping("/{listingId}")
   @Operation(summary = "Partially update listing by id")
   public ListingDto updateListing(
-      @PathVariable UUID listingId, @RequestBody ListingCreationDto listingCreationDto) {
-    return listingService.updateListing(listingId, listingCreationDto);
+      @PathVariable UUID listingId, @Valid @RequestBody ListingPatchDto listingPatchDto) {
+    return listingService.updateListing(listingId, listingPatchDto);
   }
 
   @DeleteMapping("/{listingId}")

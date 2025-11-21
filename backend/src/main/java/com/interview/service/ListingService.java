@@ -1,6 +1,7 @@
 package com.interview.service;
 
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -18,7 +19,7 @@ public interface ListingService {
 
   ListingDto putListing(UUID listingId, ListingCreationDto listingCreationDto);
 
-  ListingDto updateListing(UUID listingId, ListingCreationDto listingCreationDto);
+  ListingDto updateListing(UUID listingId, ListingPatchDto listingPatchDto);
 
   OfferDto createOfferOnListing(UUID listingId, OfferCreationDto offerCreationDto);
 

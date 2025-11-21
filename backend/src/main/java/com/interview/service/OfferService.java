@@ -2,6 +2,7 @@ package com.interview.service;
 
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface OfferService {
 
   OfferDto putOffer(UUID offerId, OfferCreationDto offerCreationDto);
 
-  OfferDto updateOffer(UUID offerId, OfferCreationDto offerCreationDto);
+  OfferDto updateOffer(UUID offerId, OfferPatchDto offerPatchDto);
 
   void deleteOffer(UUID offerId);
 }

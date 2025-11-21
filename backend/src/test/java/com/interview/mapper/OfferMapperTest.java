@@ -8,6 +8,7 @@ import com.interview.model.common.Status;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.domain.OfferEntity;
 import com.interview.model.dto.request.OfferCreationDto;
+import com.interview.model.dto.request.OfferPatchDto;
 import com.interview.model.dto.response.OfferDto;
 import java.util.UUID;
 import org.instancio.Instancio;
@@ -66,26 +67,26 @@ public class OfferMapperTest {
   }
 
   @Test
-  void offerCreationDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenAllPopulated() {
-    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+  void offerPatchDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenAllPopulated() {
+    final OfferPatchDto offerPatchDto = Instancio.create(OfferPatchDto.class);
     final OfferEntity offerEntity = Instancio.create(OfferEntity.class);
     final UUID originalOfferId = offerEntity.getOfferId();
     final ListingEntity originalListing = offerEntity.getListing();
 
     final OfferEntity result =
-        offerMapper.offerCreationDto_patchInto_offerEntity(offerEntity, offerCreationDto);
+        offerMapper.offerPatchDto_patchInto_offerEntity(offerEntity, offerPatchDto);
 
     assertSame(offerEntity, result);
-    assertEquals(offerCreationDto.getOfferPrice(), offerEntity.getOfferPrice());
-    assertEquals(offerCreationDto.getLenderName(), offerEntity.getLenderName());
-    assertEquals(offerCreationDto.getStatus(), offerEntity.getStatus());
+    assertEquals(offerPatchDto.getOfferPrice(), offerEntity.getOfferPrice());
+    assertEquals(offerPatchDto.getLenderName(), offerEntity.getLenderName());
+    assertEquals(offerPatchDto.getStatus(), offerEntity.getStatus());
     assertEquals(originalOfferId, offerEntity.getOfferId());
     assertEquals(originalListing, offerEntity.getListing());
   }
 
   @Test
-  void offerCreationDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenNonePopulated() {
-    final OfferCreationDto offerCreationDto = new OfferCreationDto();
+  void offerPatchDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenNonePopulated() {
+    final OfferPatchDto offerPatchDto = new OfferPatchDto();
     final OfferEntity offerEntity = Instancio.create(OfferEntity.class);
     final UUID originalOfferId = offerEntity.getOfferId();
     final Double originalOfferPrice = offerEntity.getOfferPrice();
@@ -94,7 +95,7 @@ public class OfferMapperTest {
     final ListingEntity originalListing = offerEntity.getListing();
 
     final OfferEntity result =
-        offerMapper.offerCreationDto_patchInto_offerEntity(offerEntity, offerCreationDto);
+        offerMapper.offerPatchDto_patchInto_offerEntity(offerEntity, offerPatchDto);
 
     assertSame(offerEntity, result);
     assertEquals(originalOfferId, offerEntity.getOfferId());
@@ -105,9 +106,9 @@ public class OfferMapperTest {
   }
 
   @Test
-  void offerCreationDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenSomePopulated() {
-    final OfferCreationDto offerCreationDto = new OfferCreationDto();
-    offerCreationDto.setLenderName("new lender name");
+  void offerPatchDto_patchInto_offerEntity_patchesFieldsOntoEntry_whenSomePopulated() {
+    final OfferPatchDto offerPatchDto = new OfferPatchDto();
+    offerPatchDto.setLenderName("new lender name");
     final OfferEntity offerEntity = Instancio.create(OfferEntity.class);
     final UUID originalOfferId = offerEntity.getOfferId();
     final Double originalOfferPrice = offerEntity.getOfferPrice();
@@ -115,12 +116,12 @@ public class OfferMapperTest {
     final ListingEntity originalListing = offerEntity.getListing();
 
     final OfferEntity result =
-        offerMapper.offerCreationDto_patchInto_offerEntity(offerEntity, offerCreationDto);
+        offerMapper.offerPatchDto_patchInto_offerEntity(offerEntity, offerPatchDto);
 
     assertSame(offerEntity, result);
     assertEquals(originalOfferId, offerEntity.getOfferId());
     assertEquals(originalOfferPrice, offerEntity.getOfferPrice());
-    assertEquals(offerCreationDto.getLenderName(), offerEntity.getLenderName());
+    assertEquals(offerPatchDto.getLenderName(), offerEntity.getLenderName());
     assertEquals(originalStatus, offerEntity.getStatus());
     assertEquals(originalListing, offerEntity.getListing());
   }

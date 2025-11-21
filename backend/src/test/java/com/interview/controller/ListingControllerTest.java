@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.ListingPatchDto;
 import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
@@ -120,14 +121,14 @@ public class ListingControllerTest {
   @Test
   void updateListing_defersToListingService() {
     final UUID listingId = UUID.randomUUID();
-    final ListingCreationDto creationDto = new ListingCreationDto();
+    final ListingPatchDto listingPatchDto = new ListingPatchDto();
     final ListingDto listingDto = new ListingDto();
 
-    when(listingService.updateListing(listingId, creationDto)).thenReturn(listingDto);
+    when(listingService.updateListing(listingId, listingPatchDto)).thenReturn(listingDto);
 
-    final ListingDto result = controller.updateListing(listingId, creationDto);
+    final ListingDto result = controller.updateListing(listingId, listingPatchDto);
 
-    verify(listingService).updateListing(listingId, creationDto);
+    verify(listingService).updateListing(listingId, listingPatchDto);
     assertSame(listingDto, result);
   }
 
