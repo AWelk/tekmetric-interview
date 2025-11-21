@@ -1,8 +1,8 @@
 ### GET all listings
-GET http://localhost:8080/listing?includeOffers=true
+GET http://localhost:8080/listing?includeOffers=false
 
 ### GET listing by id
-GET http://localhost:8080/listing/3bec57b7-23bd-4b74-b4ba-1b9be53fa513?includeOffers=true
+GET http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745?includeOffers=true
 
 ### Create listing
 POST http://localhost:8080/listing
@@ -12,40 +12,28 @@ Content-Type: application/json
   "address": "9050 AHHH st",
   "agentName": "Big Boss",
   "propertyType": "HOUSE",
-  "listingPrice": 300000.0,
-  "offers": [
-    {
-      "offerPrice": 310000.0,
-      "lenderName": "Super Big Finance",
-      "status": "PENDING"
-    },
-    {
-      "offerPrice": 290000.0,
-      "lenderName": "MEh Finance",
-      "status": "CANCELED"
-    }
-  ]
+  "listingPrice": 300000.0
 }
 
 ### GET all offers of listing
-GET http://localhost:8080/listing/5efd2ef1-d5be-4ad3-8863-7b2d4588e0f7/offer
+GET http://localhost:8080/listing/08001001-99ec-4674-948d-15db186b6f46/offer
 
 ### GET single offer of listing
-GET http://localhost:8080/listing/5efd2ef1-d5be-4ad3-8863-7b2d4588e0f7/offer/3941cb13-8bdd-4f9d-8305-2426d0895277
+GET http://localhost:8080/listing/08001001-99ec-4674-948d-15db186b6f46/offer/5b2f570f-7a5d-46cf-a7e9-fe9133720a55
 
 ### PUT listing
-PUT http://localhost:8080/listing/0a2cdb26-e672-49c8-8e72-35b16bac81be
+PUT http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745
 Content-Type: application/json
 
 {
   "address": "9050 AHHH st",
-  "agentName": "Big Boss",
+  "agentName": "Big toss",
   "propertyType": "HOUSE",
   "listingPrice": 300000.0
 }
 
 ### Create offer on a listing
-POST http://localhost:8080/listing/23e01a5d-6a4b-45d8-ac3a-25a3e1d8db2b/offer
+POST http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745/offer
 Content-Type: application/json
 
 {
@@ -55,7 +43,7 @@ Content-Type: application/json
 }
 
 ### PUT offer on listing
-PUT http://localhost:8080/listing/23e01a5d-6a4b-45d8-ac3a-25a3e1d8db2b/offer/045274f8-dd6b-4a38-8b57-7f81b746648a
+PUT http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745/offer/045274f8-dd6b-4a38-8b57-7f81b746648a
 Content-Type: application/json
 
 {

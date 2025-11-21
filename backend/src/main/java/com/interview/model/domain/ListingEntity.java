@@ -15,29 +15,33 @@ import jakarta.persistence.Table;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "listings")
-@Data
+@Getter
+@Setter
 public class ListingEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = "listing_id")
-  private UUID listingId;
+//  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "listing_id", nullable = false)
+  private UUID listingId= UUID.randomUUID();
 
+  @Column(name = "address", nullable = false)
   private String address;
 
-  @Column(name = "agent_name")
+  @Column(name = "agent_name", nullable = false)
   private String agentName;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "property_type")
+  @Column(name = "property_type", nullable = false)
   private PropertyType propertyType;
 
-  @Column(name = "listing_price")
+  @Column(name = "listing_price", nullable = false)
   private Double listingPrice;
 
-  @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
   private List<OfferEntity> offers;
 }

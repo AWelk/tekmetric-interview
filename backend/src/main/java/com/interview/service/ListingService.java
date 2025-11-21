@@ -5,6 +5,8 @@ import com.interview.model.domain.ListingEntity;
 import com.interview.model.dto.request.ListingCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.repo.ListingRepository;
+
+import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,6 +14,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,9 +62,11 @@ public class ListingService {
     // TODO validate incomming request
     final ListingEntity listingEntity =
         listingMapper.listingCreationD_to_listingEntity(listingCreationDto);
-    return listingMapper.listingEntity_to_listingDtoPlusOffers(listingRepository.save(listingEntity));
+    return listingMapper.listingEntity_to_listingDtoPlusOffers(
+        listingRepository.save(listingEntity));
   }
 
+  @Transactional
   public ListingDto putListing(final UUID listingId, final ListingCreationDto listingCreationDto) {
     final ListingEntity entityToSave =
         listingRepository
@@ -69,9 +75,16 @@ public class ListingService {
                 existingListing ->
                     listingMapper.listingCreationDto_mergeInto_listingEntry(
                         existingListing, listingCreationDto))
-            .orElseGet(() -> listingMapper.listingCreationD_to_listingEntity(listingCreationDto));
+            .orElseGet(
+                () -> {
+                  final ListingEntity listingEntity =
+                      listingMapper.listingCreationD_to_listingEntity(listingCreationDto);
+                  listingEntity.setListingId(listingId);
+                  return listingEntity;
+                });
 
-    return listingMapper.listingEntity_to_listingDtoPlusOffers(listingRepository.save(entityToSave));
+    return listingMapper.listingEntity_to_listingDto(
+        listingRepository.saveAndFlush(entityToSave));
   }
 
   public ListingDto updateListing(
@@ -85,6 +98,6 @@ public class ListingService {
   }
 
   public void deleteListing(final UUID listingId) {
-      listingRepository.deleteById(listingId);
+    listingRepository.deleteById(listingId);
   }
 }
