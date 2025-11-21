@@ -19,3 +19,26 @@ spring:
       mode: always
   jackson:
     default-property-inclusion: non_null
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    cache-names:
+      - buckets
+      - filterConfigCache
+    caffeine:
+      spec: maximumSize=1000000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filter-config-caching-enabled: true
+  filter-config-cache-name: filterConfigCache
+  filters:
+    - id: 1
+      cache-name: buckets
+      url: .*
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              time: 1
+              unit: seconds
+  cache-to-use:

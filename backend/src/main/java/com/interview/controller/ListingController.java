@@ -5,13 +5,11 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +21,8 @@ public class ListingController {
   private final ListingService listingService;
 
   @GetMapping
-  public Page<ListingDto> getAllListings(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size) {
+  public Page<ListingDto> getAllListings(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
     return listingService.getAllListings(page, size);
   }
 
