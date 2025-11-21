@@ -1,7 +1,6 @@
 package com.interview.model.dto.response;
 
 import com.interview.model.common.PropertyType;
-import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 
@@ -12,5 +11,4 @@ public class ListingDto {
   private String agentName;
   private PropertyType propertyType;
   private Double listingPrice;
-  private List<OfferDto> offers;
 }

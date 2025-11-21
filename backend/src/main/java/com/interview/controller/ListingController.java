@@ -5,10 +5,12 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
-import com.interview.service.OfferService;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+
+import com.interview.service.OfferService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,21 +22,17 @@ public class ListingController {
   private final OfferService offerService;
 
   @GetMapping
-  public Set<ListingDto> getAllListings(
-      @RequestParam(name = "includeOffers", defaultValue = "false", required = false)
-          final boolean includeOffers) {
-    return listingService.getAllListings(includeOffers);
+  public List<ListingDto> getAllListings() {
+    return listingService.getAllListings();
   }
 
   @GetMapping("/{listingId}")
-  public ListingDto getListing(
-      @PathVariable UUID listingId,
-      @RequestParam(name = "includeOffers", defaultValue = "false", required = false)
-          final boolean includeOffers) {
-    return listingService.getListingById(listingId, includeOffers);
+  public ListingDto getListing(@PathVariable UUID listingId) {
+    return listingService.getListingById(listingId);
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public ListingDto createListing(@RequestBody ListingCreationDto listingCreationDto) {
     return listingService.createListing(listingCreationDto);
   }
@@ -46,27 +44,14 @@ public class ListingController {
   }
 
   @GetMapping("/{listingId}/offer")
-  public Set<OfferDto> getOffers(@PathVariable UUID listingId) {
-    return offerService.getOffersByListingId(listingId);
-  }
-
-  @GetMapping("/{listingId}/offer/{offerId}")
-  public OfferDto getOfferById(@PathVariable UUID listingId, @PathVariable UUID offerId) {
-    return offerService.getOfferById(listingId, offerId);
+  public List<OfferDto> getOffers(@PathVariable UUID listingId) {
+    return listingService.getOffersByListingId(listingId);
   }
 
   @PostMapping("/{listingId}/offer")
   public OfferDto createOffer(
       @PathVariable UUID listingId, @RequestBody OfferCreationDto offerCreationDto) {
-    return offerService.createOffer(listingId, offerCreationDto);
-  }
-
-  @PutMapping("/{listingId}/offer/{offerId}")
-  public OfferDto putOffer(
-      @PathVariable UUID listingId,
-      @PathVariable UUID offerId,
-      @RequestBody OfferCreationDto offerCreationDto) {
-    return offerService.putOffer(listingId, offerId, offerCreationDto);
+    return listingService.createOfferOnListing(listingId, offerCreationDto);
   }
 
   @PatchMapping("/{listingId}")
@@ -75,16 +60,8 @@ public class ListingController {
     return listingService.updateListing(listingId, listingCreationDto);
   }
 
-  @PatchMapping("/{listingId}/offer/{offerId}")
-  public OfferDto updateOffer(
-      @PathVariable UUID listingId,
-      @PathVariable UUID offerId,
-      @RequestBody OfferCreationDto offerCreationDto) {
-    return offerService.updateOffer(listingId, offerId, offerCreationDto);
-  }
-
   @DeleteMapping("/{listingId}")
-    public void deleteListing(@PathVariable UUID listingId) {
-      listingService.deleteListing(listingId);
+  public void deleteListing(@PathVariable UUID listingId) {
+    listingService.deleteListing(listingId);
   }
 }

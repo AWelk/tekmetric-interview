@@ -1,5 +1,6 @@
 package com.interview.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.interview.model.common.PropertyType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,9 +26,9 @@ import lombok.Setter;
 public class ListingEntity {
 
   @Id
-//  @GeneratedValue(strategy = GenerationType.UUID)
+  @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "listing_id", nullable = false)
-  private UUID listingId= UUID.randomUUID();
+  private UUID listingId;
 
   @Column(name = "address", nullable = false)
   private String address;
@@ -43,5 +44,6 @@ public class ListingEntity {
   private Double listingPrice;
 
   @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+  @JsonManagedReference
   private List<OfferEntity> offers;
 }

@@ -1,8 +1,8 @@
 ### GET all listings
-GET http://localhost:8080/listing?includeOffers=false
+GET http://localhost:8080/listing
 
 ### GET listing by id
-GET http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745?includeOffers=true
+GET http://localhost:8080/listing/8cea99ff-2fc4-4fb8-9685-06d3887afcb0
 
 ### Create listing
 POST http://localhost:8080/listing
@@ -16,13 +16,13 @@ Content-Type: application/json
 }
 
 ### GET all offers of listing
-GET http://localhost:8080/listing/08001001-99ec-4674-948d-15db186b6f46/offer
+GET http://localhost:8080/listing/3b27092c-644a-49a9-a4e3-e575fd163525/offer
 
 ### GET single offer of listing
-GET http://localhost:8080/listing/08001001-99ec-4674-948d-15db186b6f46/offer/5b2f570f-7a5d-46cf-a7e9-fe9133720a55
+GET http://localhost:8080/offer/80cb6c28-cdba-43f1-b581-3e0779f9c134
 
 ### PUT listing
-PUT http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745
+PUT http://localhost:8080/listing/6c231252-1555-4435-9a87-e208ef32c015
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### Create offer on a listing
-POST http://localhost:8080/listing/b85a315a-124c-45d1-baa4-dcf9dc9e3745/offer
+POST http://localhost:8080/listing/3b27092c-644a-49a9-a4e3-e575fd163525/offer
 Content-Type: application/json
 
 {
@@ -53,7 +53,7 @@ Content-Type: application/json
 }
 
 ### PATCH listing
-PATCH http://localhost:8080/listing/5567a960-1d90-4451-8a41-98c87e1e89bc
+PATCH http://localhost:8080/listing/283685d5-b7f0-4e2b-9561-cacd22b8549b
 Content-Type: application/json
 
 {
@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 ### PATCH offer
-PATCH http://localhost:8080/listing/f4c52dad-014c-481d-853b-afd4566f4432/offer/ff02f0d0-1e7a-4ed7-92b8-89b27a69bb23
+PATCH http://localhost:8080/offer/0f3518df-f30f-41b0-b70a-e6d3215fe31f
 Content-Type: application/json
 
 {
@@ -70,4 +70,7 @@ Content-Type: application/json
 }
 
 ### DELETE listing
-DELETE http://localhost:8080/listing/a0b6fb25-1d63-4a43-b1d1-b842181d8d37
+DELETE http://localhost:8080/listing/78594372-4ae4-4ebb-a57a-231e898d0bdc
+
+### DELETE offer
+DELETE http://localhost:8080/offer/3bdeb393-f42a-4a24-afc9-2e2ee1628592

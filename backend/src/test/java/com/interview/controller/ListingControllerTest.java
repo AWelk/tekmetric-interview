@@ -9,8 +9,10 @@ import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
 import com.interview.service.OfferService;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,28 +34,26 @@ public class ListingControllerTest {
 
   @Test
   void getAllListings_defersToListingService() {
-    final boolean includeOffers = true;
-    final Set<ListingDto> listings = Set.of(new ListingDto());
+    final List<ListingDto> listings = List.of(new ListingDto());
 
-    when(listingService.getAllListings(includeOffers)).thenReturn(listings);
+    when(listingService.getAllListings()).thenReturn(listings);
 
-    final Set<ListingDto> result = controller.getAllListings(includeOffers);
+    final List<ListingDto> result = controller.getAllListings();
 
-    verify(listingService).getAllListings(includeOffers);
+    verify(listingService).getAllListings();
     assertSame(listings, result);
   }
 
   @Test
   void getListing_defersToListingService() {
     final UUID listingId = UUID.randomUUID();
-    final boolean includeOffers = true;
     final ListingDto listingDto = new ListingDto();
 
-    when(listingService.getListingById(listingId, includeOffers)).thenReturn(listingDto);
+    when(listingService.getListingById(listingId)).thenReturn(listingDto);
 
-    final ListingDto result = controller.getListing(listingId, includeOffers);
+    final ListingDto result = controller.getListing(listingId);
 
-    verify(listingService).getListingById(listingId, includeOffers);
+    verify(listingService).getListingById(listingId);
     assertSame(listingDto, result);
   }
 
@@ -85,30 +85,16 @@ public class ListingControllerTest {
   }
 
   @Test
-  void getOffers_defersToOfferService() {
+  void getOffers_defersToListingService() {
     final UUID listingId = UUID.randomUUID();
-    final Set<OfferDto> offers = Set.of(new OfferDto());
+    final List<OfferDto> offers = Instancio.createList(OfferDto.class);
 
-    when(offerService.getOffersByListingId(listingId)).thenReturn(offers);
+    when(listingService.getOffersByListingId(listingId)).thenReturn(offers);
 
-    final Set<OfferDto> result = controller.getOffers(listingId);
+    final List<OfferDto> result = controller.getOffers(listingId);
 
-    verify(offerService).getOffersByListingId(listingId);
+    verify(listingService).getOffersByListingId(listingId);
     assertSame(offers, result);
-  }
-
-  @Test
-  void getOfferById_defersToOfferService() {
-    final UUID listingId = UUID.randomUUID();
-    final UUID offerId = UUID.randomUUID();
-    final OfferDto offerDto = new OfferDto();
-
-    when(offerService.getOfferById(listingId, offerId)).thenReturn(offerDto);
-
-    final OfferDto result = controller.getOfferById(listingId, offerId);
-
-    verify(offerService).getOfferById(listingId, offerId);
-    assertSame(offerDto, result);
   }
 
   @Test
@@ -117,26 +103,11 @@ public class ListingControllerTest {
     final OfferCreationDto creationDto = new OfferCreationDto();
     final OfferDto offerDto = new OfferDto();
 
-    when(offerService.createOffer(listingId, creationDto)).thenReturn(offerDto);
+    when(listingService.createOfferOnListing(listingId, creationDto)).thenReturn(offerDto);
 
     final OfferDto result = controller.createOffer(listingId, creationDto);
 
-    verify(offerService).createOffer(listingId, creationDto);
-    assertSame(offerDto, result);
-  }
-
-  @Test
-  void putOffer_defersToOfferService() {
-    final UUID listingId = UUID.randomUUID();
-    final UUID offerId = UUID.randomUUID();
-    final OfferCreationDto creationDto = new OfferCreationDto();
-    final OfferDto offerDto = new OfferDto();
-
-    when(offerService.putOffer(listingId, offerId, creationDto)).thenReturn(offerDto);
-
-    final OfferDto result = controller.putOffer(listingId, offerId, creationDto);
-
-    verify(offerService).putOffer(listingId, offerId, creationDto);
+    verify(listingService).createOfferOnListing(listingId, creationDto);
     assertSame(offerDto, result);
   }
 
@@ -152,21 +123,6 @@ public class ListingControllerTest {
 
     verify(listingService).updateListing(listingId, creationDto);
     assertSame(listingDto, result);
-  }
-
-  @Test
-  void updateOffer_defersToOfferService() {
-    final UUID listingId = UUID.randomUUID();
-    final UUID offerId = UUID.randomUUID();
-    final OfferCreationDto creationDto = new OfferCreationDto();
-    final OfferDto offerDto = new OfferDto();
-
-    when(offerService.updateOffer(listingId, offerId, creationDto)).thenReturn(offerDto);
-
-    final OfferDto result = controller.updateOffer(listingId, offerId, creationDto);
-
-    verify(offerService).updateOffer(listingId, offerId, creationDto);
-    assertSame(offerDto, result);
   }
 
   @Test
