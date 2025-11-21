@@ -1,7 +1,8 @@
 package com.interview.controller;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.interview.model.dto.request.ListingCreationDto;
 import com.interview.model.dto.request.OfferCreationDto;
