@@ -20,6 +20,7 @@ import com.interview.repo.OfferRepository;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import lombok.Data;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,13 +61,13 @@ public class ListingControllerIntegrationTest {
 
   @Test
   void getListings_returnsEmpty_whenNoListingsExit() {
-    final ResponseEntity<List<ListingDto>> response =
+    final ResponseEntity<CustomPage<ListingDto>> response =
         restTemplate.exchange(
             LISTING_URI, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {});
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertTrue(response.getBody().isEmpty());
+    assertTrue(response.getBody().getContent().isEmpty());
   }
 
   @Test
@@ -86,15 +87,15 @@ public class ListingControllerIntegrationTest {
     final ListingDto listingDto1 = listingMapper.listingEntity_to_listingDto(listingEntity1);
     final ListingDto listingDto2 = listingMapper.listingEntity_to_listingDto(listingEntity2);
 
-    final ResponseEntity<List<ListingDto>> response =
+    final ResponseEntity<CustomPage<ListingDto>> response =
         restTemplate.exchange(
             LISTING_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertEquals(2, response.getBody().size());
-    assertTrue(response.getBody().contains(listingDto1));
-    assertTrue(response.getBody().contains(listingDto2));
+    assertEquals(2, response.getBody().getContent().size());
+    assertTrue(response.getBody().getContent().contains(listingDto1));
+    assertTrue(response.getBody().getContent().contains(listingDto2));
   }
 
   @Test
@@ -259,132 +260,144 @@ public class ListingControllerIntegrationTest {
 
   @Test
   void createOffer_createsOffer_whenListingPresent() {
-      final ListingEntity listingEntity =
-              listingRepository.save(
-                      Instancio.of(ListingEntity.class)
-                              .ignore(field("listingId"))
-                              .ignore(field("offers"))
-                              .create());
-      final UUID listingId = listingEntity.getListingId();
-      final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final ListingEntity listingEntity =
+        listingRepository.save(
+            Instancio.of(ListingEntity.class)
+                .ignore(field("listingId"))
+                .ignore(field("offers"))
+                .create());
+    final UUID listingId = listingEntity.getListingId();
+    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
 
-      final ResponseEntity<OfferDto> response =
-              restTemplate.postForEntity(
-                      LISTING_OFFER_URI_BUILDER.build(listingId), offerCreationDto, OfferDto.class);
+    final ResponseEntity<OfferDto> response =
+        restTemplate.postForEntity(
+            LISTING_OFFER_URI_BUILDER.build(listingId), offerCreationDto, OfferDto.class);
 
-      assertEquals(HttpStatus.OK, response.getStatusCode());
-      assertNotNull(response.getBody());
-      final OfferDto responseBody = response.getBody();
-      final OfferEntity savedEntity = offerRepository.findById(responseBody.getOfferId()).orElseThrow();
-      assertEquals(responseBody.getOfferId(), savedEntity.getOfferId());
-      assertEquals(responseBody.getOfferPrice(), savedEntity.getOfferPrice());
-      assertEquals(responseBody.getLenderName(), savedEntity.getLenderName());
-      assertEquals(responseBody.getStatus(), savedEntity.getStatus());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    final OfferDto responseBody = response.getBody();
+    final OfferEntity savedEntity =
+        offerRepository.findById(responseBody.getOfferId()).orElseThrow();
+    assertEquals(responseBody.getOfferId(), savedEntity.getOfferId());
+    assertEquals(responseBody.getOfferPrice(), savedEntity.getOfferPrice());
+    assertEquals(responseBody.getLenderName(), savedEntity.getLenderName());
+    assertEquals(responseBody.getStatus(), savedEntity.getStatus());
   }
 
   @Test
   void updateListing_return404_whenListingNotPresent() {
-      final UUID listingId = UUID.randomUUID();
-      final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
+    final UUID listingId = UUID.randomUUID();
+    final OfferCreationDto offerCreationDto = Instancio.create(OfferCreationDto.class);
 
-      final ResponseEntity<ListingDto> response = restTemplate.exchange(
-              LISTING_ID_URI_BUILDER.build(listingId), HttpMethod.PATCH, new HttpEntity<>(offerCreationDto), ListingDto.class);
+    final ResponseEntity<ListingDto> response =
+        restTemplate.exchange(
+            LISTING_ID_URI_BUILDER.build(listingId),
+            HttpMethod.PATCH,
+            new HttpEntity<>(offerCreationDto),
+            ListingDto.class);
 
-      assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
   void updateListing_updatesListing_whenListingPresent() {
-      final ListingEntity originalEntity =
-              listingRepository.save(
-                      Instancio.of(ListingEntity.class)
-                              .ignore(field("listingId"))
-                              .ignore(field("offers"))
-                              .create());
-      final ListingCreationDto dto = Instancio.create(ListingCreationDto.class);
+    final ListingEntity originalEntity =
+        listingRepository.save(
+            Instancio.of(ListingEntity.class)
+                .ignore(field("listingId"))
+                .ignore(field("offers"))
+                .create());
+    final ListingCreationDto dto = Instancio.create(ListingCreationDto.class);
 
-      final ResponseEntity<ListingDto> response =
-              restTemplate.exchange(
-                      LISTING_ID_URI_BUILDER.build(originalEntity.getListingId()),
-                      HttpMethod.PATCH,
-                      new HttpEntity<>(dto),
-                      ListingDto.class);
+    final ResponseEntity<ListingDto> response =
+        restTemplate.exchange(
+            LISTING_ID_URI_BUILDER.build(originalEntity.getListingId()),
+            HttpMethod.PATCH,
+            new HttpEntity<>(dto),
+            ListingDto.class);
 
-      final ListingEntity updatedEntity =
-              listingRepository.findById(originalEntity.getListingId()).orElseThrow();
-      assertEquals(HttpStatus.OK, response.getStatusCode());
-      assertNotNull(response.getBody());
-      final ListingDto responseBody = response.getBody();
-      compareDtoToEntity(responseBody, updatedEntity);
+    final ListingEntity updatedEntity =
+        listingRepository.findById(originalEntity.getListingId()).orElseThrow();
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    final ListingDto responseBody = response.getBody();
+    compareDtoToEntity(responseBody, updatedEntity);
   }
 
   @Test
   void deleteListing_return204_whenListingNotPresent() {
-      final ResponseEntity<Void> response =
-              restTemplate.exchange(
-                      LISTING_ID_URI_BUILDER.build(UUID.randomUUID()),
-                      HttpMethod.DELETE,
-                      HttpEntity.EMPTY,
-                      Void.class);
+    final ResponseEntity<Void> response =
+        restTemplate.exchange(
+            LISTING_ID_URI_BUILDER.build(UUID.randomUUID()),
+            HttpMethod.DELETE,
+            HttpEntity.EMPTY,
+            Void.class);
 
-      assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 
-    @Test
+  @Test
   void deleteListing_deletesListing_whenListingPresent() {
-      final ListingEntity originalEntity =
-              listingRepository.save(
-                      Instancio.of(ListingEntity.class)
-                              .ignore(field("listingId"))
-                              .ignore(field("offers"))
-                              .create());
+    final ListingEntity originalEntity =
+        listingRepository.save(
+            Instancio.of(ListingEntity.class)
+                .ignore(field("listingId"))
+                .ignore(field("offers"))
+                .create());
 
-      final ResponseEntity<Void> response =
-              restTemplate.exchange(
-                      LISTING_ID_URI_BUILDER.build(originalEntity.getListingId()),
-                      HttpMethod.DELETE,
-                      HttpEntity.EMPTY,
-                      Void.class);
+    final ResponseEntity<Void> response =
+        restTemplate.exchange(
+            LISTING_ID_URI_BUILDER.build(originalEntity.getListingId()),
+            HttpMethod.DELETE,
+            HttpEntity.EMPTY,
+            Void.class);
 
-      assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-      assertFalse(listingRepository.existsById(originalEntity.getListingId()));
+    assertFalse(listingRepository.existsById(originalEntity.getListingId()));
   }
 
   @Test
   void deleteListing_deletesListingAndOffers() {
-      ListingEntity listingEntity =
-              listingRepository.save(
-                      Instancio.of(ListingEntity.class)
-                              .ignore(field("listingId"))
-                              .ignore(field("offers"))
-                              .create());
-      final List<OfferEntity> offerEntities =
-              Instancio.ofList(OfferEntity.class)
-                      .ignore(field(OfferEntity::getOfferId))
-                      .set(field(OfferEntity::getListing), listingEntity)
-                      .create();
-      listingEntity.setOffers(offerEntities);
-      listingEntity = listingRepository.save(listingEntity);
+    ListingEntity listingEntity =
+        listingRepository.save(
+            Instancio.of(ListingEntity.class)
+                .ignore(field("listingId"))
+                .ignore(field("offers"))
+                .create());
+    final List<OfferEntity> offerEntities =
+        Instancio.ofList(OfferEntity.class)
+            .ignore(field(OfferEntity::getOfferId))
+            .set(field(OfferEntity::getListing), listingEntity)
+            .create();
+    listingEntity.setOffers(offerEntities);
+    listingEntity = listingRepository.save(listingEntity);
 
-      final ResponseEntity<Void> response =
-              restTemplate.exchange(
-                      LISTING_ID_URI_BUILDER.build(listingEntity.getListingId()),
-                      HttpMethod.DELETE,
-                      HttpEntity.EMPTY,
-                      Void.class);
+    final ResponseEntity<Void> response =
+        restTemplate.exchange(
+            LISTING_ID_URI_BUILDER.build(listingEntity.getListingId()),
+            HttpMethod.DELETE,
+            HttpEntity.EMPTY,
+            Void.class);
 
-      assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-      assertFalse(listingRepository.existsById(listingEntity.getListingId()));
-      listingEntity.getOffers().forEach(offerEntity -> assertFalse(offerRepository.existsById(offerEntity.getOfferId())));
+    assertFalse(listingRepository.existsById(listingEntity.getListingId()));
+    listingEntity
+        .getOffers()
+        .forEach(offerEntity -> assertFalse(offerRepository.existsById(offerEntity.getOfferId())));
   }
 
-    private void compareDtoToEntity(final ListingDto dto, final ListingEntity entity) {
+  private void compareDtoToEntity(final ListingDto dto, final ListingEntity entity) {
     assertEquals(dto.getListingId(), entity.getListingId());
     assertEquals(dto.getAddress(), entity.getAddress());
     assertEquals(dto.getAgentName(), entity.getAgentName());
     assertEquals(dto.getPropertyType(), entity.getPropertyType());
     assertEquals(dto.getListingPrice(), entity.getListingPrice());
+  }
+
+  @Data
+  private static class CustomPage<T> {
+    private List<T> content;
   }
 }

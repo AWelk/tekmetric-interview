@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -17,7 +18,6 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +28,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class ListingServiceTest {
@@ -47,19 +51,25 @@ public class ListingServiceTest {
   void getAllListings_returnsListings() {
     final ListingEntity listingEntity1 = Instancio.create(ListingEntity.class);
     final ListingEntity listingEntity2 = Instancio.create(ListingEntity.class);
+    int pageNumber = 0;
+    int pageSize = 10;
+    final Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    final Page<ListingEntity> page =
+        new PageImpl<>(List.of(listingEntity1, listingEntity2), pageable, 2);
     final ListingDto dto1 = Instancio.create(ListingDto.class);
     final ListingDto dto2 = Instancio.create(ListingDto.class);
 
-    when(listingRepository.findAll()).thenReturn(List.of(listingEntity1, listingEntity2));
+    when(listingRepository.findAll(any(Pageable.class))).thenReturn(page);
     when(listingMapper.listingEntity_to_listingDto(listingEntity1)).thenReturn(dto1);
     when(listingMapper.listingEntity_to_listingDto(listingEntity2)).thenReturn(dto2);
 
-    final List<ListingDto> result = listingService.getAllListings();
+    final Page<ListingDto> result = listingService.getAllListings(pageNumber, pageSize);
 
-    assertEquals(2, result.size());
-    assertTrue(result.contains(dto1));
-    assertTrue(result.contains(dto2));
-    verify(listingRepository).findAll();
+    final List<ListingDto> content = result.getContent();
+    assertEquals(2, content.size());
+    assertTrue(content.contains(dto1));
+    assertTrue(content.contains(dto2));
+    verify(listingRepository).findAll(any(Pageable.class));
     verify(listingMapper).listingEntity_to_listingDto(listingEntity1);
     verify(listingMapper).listingEntity_to_listingDto(listingEntity2);
     verifyNoMoreInteractions(listingRepository, listingMapper);
@@ -67,12 +77,17 @@ public class ListingServiceTest {
 
   @Test
   void getAllListings_returnsEmpty_whenNoListingFound() {
-    when(listingRepository.findAll()).thenReturn(Collections.emptyList());
+    int pageNumber = 0;
+    int pageSize = 10;
+    final Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    final Page<ListingEntity> page = Page.empty(pageable);
 
-    final List<ListingDto> result = listingService.getAllListings();
+    when(listingRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+    final Page<ListingDto> result = listingService.getAllListings(pageNumber, pageSize);
 
     assertTrue(result.isEmpty());
-    verify(listingRepository).findAll();
+    verify(listingRepository).findAll(any(Pageable.class));
     verifyNoMoreInteractions(listingRepository, listingMapper);
   }
 
@@ -218,20 +233,23 @@ public class ListingServiceTest {
   @Test
   void createOfferOnListing_rethrowsListingNotFoundException_whenListingIsNotPresent() {
     final UUID listingId = UUID.randomUUID();
-      final OfferCreationDto creationDto = Instancio.create(OfferCreationDto.class);
-      final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
+    final OfferCreationDto creationDto = Instancio.create(OfferCreationDto.class);
+    final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
 
-      when(listingRepository.getReferenceById(listingId)).thenReturn(listingEntity);
-      when(offerService.createOfferOnListing(listingEntity, creationDto)).thenThrow(DataIntegrityViolationException.class);
+    when(listingRepository.getReferenceById(listingId)).thenReturn(listingEntity);
+    when(offerService.createOfferOnListing(listingEntity, creationDto))
+        .thenThrow(DataIntegrityViolationException.class);
 
-      assertThrows(ListingNotFoundException.class, () -> listingService.createOfferOnListing(listingId, creationDto));
+    assertThrows(
+        ListingNotFoundException.class,
+        () -> listingService.createOfferOnListing(listingId, creationDto));
 
-      verify(listingRepository).getReferenceById(listingId);
-      verify(offerService).createOfferOnListing(listingEntity, creationDto);
-      verifyNoMoreInteractions(listingRepository, listingMapper);
+    verify(listingRepository).getReferenceById(listingId);
+    verify(offerService).createOfferOnListing(listingEntity, creationDto);
+    verifyNoMoreInteractions(listingRepository, listingMapper);
   }
 
-    @Test
+  @Test
   void getOffersByListingId_throwsListingNotFoundException_whenListingIsNotPresent() {
     final UUID listingId = UUID.randomUUID();
 

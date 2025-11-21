@@ -8,6 +8,7 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.instancio.Instancio;
@@ -16,6 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class ListingControllerTest {
@@ -31,13 +36,16 @@ public class ListingControllerTest {
 
   @Test
   void getAllListings_defersToListingService() {
-    final List<ListingDto> listings = List.of(new ListingDto());
+    int pageNumber = 0;
+    int pageSize = 10;
+    final Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    final Page<ListingDto> listings = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
-    when(listingService.getAllListings()).thenReturn(listings);
+    when(listingService.getAllListings(pageNumber, pageSize)).thenReturn(listings);
 
-    final List<ListingDto> result = controller.getAllListings();
+    final Page<ListingDto> result = controller.getAllListings(pageNumber, pageSize);
 
-    verify(listingService).getAllListings();
+    verify(listingService).getAllListings(pageNumber, pageSize);
     assertSame(listings, result);
   }
 

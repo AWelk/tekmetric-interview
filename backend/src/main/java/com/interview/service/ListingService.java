@@ -10,10 +10,13 @@ import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -21,14 +24,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ListingService {
 
+  private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.ASC, "listingId");
+
   private final OfferService offerService;
   private final ListingRepository listingRepository;
   private final ListingMapper listingMapper;
 
-  public List<ListingDto> getAllListings() {
-    return listingRepository.findAll().stream()
-        .map(listingMapper::listingEntity_to_listingDto)
-        .collect(Collectors.toList());
+  public Page<ListingDto> getAllListings(int page, int size) {
+    final Pageable pageable = PageRequest.of(page, size, DEFAULT_SORT);
+    return listingRepository.findAll(pageable).map(listingMapper::listingEntity_to_listingDto);
   }
 
   public ListingDto getListingById(final UUID listingId) {

@@ -10,6 +10,8 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,9 @@ public class ListingController {
   private final ListingService listingService;
 
   @GetMapping
-  public List<ListingDto> getAllListings() {
-    return listingService.getAllListings();
+  public Page<ListingDto> getAllListings(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size) {
+    return listingService.getAllListings(page, size);
   }
 
   @GetMapping("/{listingId}")
