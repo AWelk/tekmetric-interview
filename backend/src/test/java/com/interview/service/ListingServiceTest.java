@@ -13,6 +13,7 @@ import com.interview.exception.ListingNotFoundException;
 import com.interview.mapper.ListingMapper;
 import com.interview.model.domain.ListingEntity;
 import com.interview.model.dto.request.ListingCreationDto;
+import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @ExtendWith(MockitoExtension.class)
 public class ListingServiceTest {
@@ -196,6 +198,40 @@ public class ListingServiceTest {
   }
 
   @Test
+  void createOfferOnListing_passeReferenceToOfferService() {
+    final UUID listingId = UUID.randomUUID();
+    final OfferCreationDto creationDto = Instancio.create(OfferCreationDto.class);
+    final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
+    final OfferDto offerDto = Instancio.create(OfferDto.class);
+
+    when(listingRepository.getReferenceById(listingId)).thenReturn(listingEntity);
+    when(offerService.createOfferOnListing(listingEntity, creationDto)).thenReturn(offerDto);
+
+    final OfferDto result = listingService.createOfferOnListing(listingId, creationDto);
+
+    assertSame(offerDto, result);
+    verify(listingRepository).getReferenceById(listingId);
+    verify(offerService).createOfferOnListing(listingEntity, creationDto);
+    verifyNoMoreInteractions(listingRepository, listingMapper);
+  }
+
+  @Test
+  void createOfferOnListing_rethrowsListingNotFoundException_whenListingIsNotPresent() {
+    final UUID listingId = UUID.randomUUID();
+      final OfferCreationDto creationDto = Instancio.create(OfferCreationDto.class);
+      final ListingEntity listingEntity = Instancio.create(ListingEntity.class);
+
+      when(listingRepository.getReferenceById(listingId)).thenReturn(listingEntity);
+      when(offerService.createOfferOnListing(listingEntity, creationDto)).thenThrow(DataIntegrityViolationException.class);
+
+      assertThrows(ListingNotFoundException.class, () -> listingService.createOfferOnListing(listingId, creationDto));
+
+      verify(listingRepository).getReferenceById(listingId);
+      verify(offerService).createOfferOnListing(listingEntity, creationDto);
+      verifyNoMoreInteractions(listingRepository, listingMapper);
+  }
+
+    @Test
   void getOffersByListingId_throwsListingNotFoundException_whenListingIsNotPresent() {
     final UUID listingId = UUID.randomUUID();
 
@@ -220,7 +256,7 @@ public class ListingServiceTest {
     when(listingRepository.findById(listingId)).thenReturn(Optional.of(listingEntity));
     when(offerService.getOffersByListingId(listingId)).thenReturn(offerDtos);
 
-    final  List<OfferDto> result = listingService.getOffersByListingId(listingId);
+    final List<OfferDto> result = listingService.getOffersByListingId(listingId);
 
     assertSame(offerDtos, result);
   }

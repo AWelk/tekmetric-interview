@@ -8,8 +8,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = OfferMapper.class)
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    uses = OfferMapper.class,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ListingMapper {
 
   ListingDto listingEntity_to_listingDto(ListingEntity listingEntity);

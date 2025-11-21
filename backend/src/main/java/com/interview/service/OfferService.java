@@ -41,7 +41,6 @@ public class OfferService {
   }
 
   public OfferDto putOffer(final UUID offerId, final OfferCreationDto offerCreationDto) {
-    // TODO handle exception if listing is present
     return offerRepository
         .findById(offerId)
         .map(o -> offerMapper.offerCreationDto_mergeInto_offerEntity(o, offerCreationDto))

@@ -61,6 +61,7 @@ public class ListingController {
   }
 
   @DeleteMapping("/{listingId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteListing(@PathVariable UUID listingId) {
     listingService.deleteListing(listingId);
   }

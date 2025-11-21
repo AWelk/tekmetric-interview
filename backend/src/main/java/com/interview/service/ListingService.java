@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -71,7 +72,11 @@ public class ListingService {
     // TODO handle reference being null
     final ListingEntity listingEntity = listingRepository.getReferenceById(listingId);
 
-    return offerService.createOfferOnListing(listingEntity, offerCreationDto);
+    try {
+      return offerService.createOfferOnListing(listingEntity, offerCreationDto);
+    } catch (DataIntegrityViolationException e) {
+      throw new ListingNotFoundException(listingId);
+    }
   }
 
   public List<OfferDto> getOffersByListingId(final UUID listingId) {
