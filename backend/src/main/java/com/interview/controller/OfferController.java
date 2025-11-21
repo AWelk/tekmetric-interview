@@ -5,6 +5,8 @@ import com.interview.model.dto.response.OfferDto;
 import com.interview.service.OfferService;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,22 +23,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "offer", produces = "application/json")
+@Tag(name = "Offers")
 public class OfferController {
 
   private final OfferService offerService;
 
   @GetMapping("/{offerId}")
+  @Operation(summary = "Get offer by id")
   public OfferDto getOfferById(@PathVariable UUID offerId) {
     return offerService.getOfferById(offerId);
   }
 
   @PutMapping("/{offerId}")
+  @Operation(summary = "Repace offer by id")
   public OfferDto putOffer(
       @PathVariable UUID offerId, @Valid @RequestBody OfferCreationDto offerCreationDto) {
     return offerService.putOffer(offerId, offerCreationDto);
   }
 
   @PatchMapping("/{offerId}")
+  @Operation(summary = "Partially update offer by id")
   public OfferDto updateOffer(
       @PathVariable UUID offerId, @RequestBody OfferCreationDto offerCreationDto) {
     return offerService.updateOffer(offerId, offerCreationDto);
@@ -44,6 +50,7 @@ public class OfferController {
 
   @DeleteMapping("/{offerId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(summary = "Delete offer by id")
   public void deleteOffer(@PathVariable UUID offerId) {
     offerService.deleteOffer(offerId);
   }
