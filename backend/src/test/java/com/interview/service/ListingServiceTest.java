@@ -18,6 +18,7 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.repo.ListingRepository;
+import com.interview.service.impl.ListingServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class ListingServiceTest {
 
   @BeforeEach
   void setUp() {
-    listingService = new ListingService(offerService, listingRepository, listingMapper);
+    listingService = new ListingServiceImpl(offerService, listingRepository, listingMapper);
   }
 
   @Test

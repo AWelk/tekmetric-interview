@@ -19,6 +19,8 @@ import com.interview.repo.OfferRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.interview.service.impl.OfferServiceImpl;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ public class OfferServiceTest {
 
   @BeforeEach
   void setUp() {
-    offerService = new OfferService(offerRepository, offerMapper);
+    offerService = new OfferServiceImpl(offerRepository, offerMapper);
   }
 
   @Test
