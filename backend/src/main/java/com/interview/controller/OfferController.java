@@ -45,7 +45,7 @@ public class OfferController {
   @PatchMapping("/{offerId}")
   @Operation(summary = "Partially update offer by id")
   public OfferDto updateOffer(
-      @PathVariable UUID offerId, @RequestBody OfferPatchDto offerPatchDto) {
+      @PathVariable UUID offerId, @Valid @RequestBody OfferPatchDto offerPatchDto) {
     return offerService.updateOffer(offerId, offerPatchDto);
   }
 

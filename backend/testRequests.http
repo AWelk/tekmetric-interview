@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "address": "9050 AHHH st",
-  "agentName": "Big toss",
+  "agentName": "Big Boss",
   "propertyType": "HOUSE",
   "listingPrice": 300000.0
 }
