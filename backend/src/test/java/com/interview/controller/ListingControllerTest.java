@@ -8,10 +8,8 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.ListingDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.ListingService;
-import com.interview.service.OfferService;
 import java.util.List;
 import java.util.UUID;
-
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +23,10 @@ public class ListingControllerTest {
   private ListingController controller;
 
   @Mock private ListingService listingService;
-  @Mock private OfferService offerService;
 
   @BeforeEach
   void setUp() {
-    controller = new ListingController(listingService, offerService);
+    controller = new ListingController(listingService);
   }
 
   @Test

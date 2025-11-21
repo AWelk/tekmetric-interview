@@ -8,7 +8,7 @@ import com.interview.service.ListingService;
 import java.util.List;
 import java.util.UUID;
 
-import com.interview.service.OfferService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class ListingController {
 
   private final ListingService listingService;
-  private final OfferService offerService;
 
   @GetMapping
   public List<ListingDto> getAllListings() {
@@ -33,13 +32,13 @@ public class ListingController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ListingDto createListing(@RequestBody ListingCreationDto listingCreationDto) {
+  public ListingDto createListing(@Valid @RequestBody ListingCreationDto listingCreationDto) {
     return listingService.createListing(listingCreationDto);
   }
 
   @PutMapping("/{listingId}")
   public ListingDto putListing(
-      @PathVariable UUID listingId, @RequestBody ListingCreationDto listingCreationDto) {
+      @PathVariable UUID listingId, @Valid @RequestBody ListingCreationDto listingCreationDto) {
     return listingService.putListing(listingId, listingCreationDto);
   }
 
@@ -50,7 +49,7 @@ public class ListingController {
 
   @PostMapping("/{listingId}/offer")
   public OfferDto createOffer(
-      @PathVariable UUID listingId, @RequestBody OfferCreationDto offerCreationDto) {
+      @PathVariable UUID listingId, @Valid @RequestBody OfferCreationDto offerCreationDto) {
     return listingService.createOfferOnListing(listingId, offerCreationDto);
   }
 

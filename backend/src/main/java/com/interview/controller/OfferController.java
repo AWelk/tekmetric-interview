@@ -4,6 +4,8 @@ import com.interview.model.dto.request.OfferCreationDto;
 import com.interview.model.dto.response.OfferDto;
 import com.interview.service.OfferService;
 import java.util.UUID;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class OfferController {
 
   @PutMapping("/{offerId}")
   public OfferDto putOffer(
-      @PathVariable UUID offerId, @RequestBody OfferCreationDto offerCreationDto) {
+      @PathVariable UUID offerId, @Valid @RequestBody OfferCreationDto offerCreationDto) {
     return offerService.putOffer(offerId, offerCreationDto);
   }
 
