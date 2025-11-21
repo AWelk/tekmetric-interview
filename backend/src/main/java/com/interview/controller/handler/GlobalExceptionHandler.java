@@ -22,14 +22,15 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-    Map<String, String> errors = new HashMap<>();
+  public ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException e) {
+    final Map<String, String> errors = new HashMap<>();
     e.getBindingResult()
         .getFieldErrors()
         .forEach(
             error -> {
               errors.put(error.getField(), error.getDefaultMessage());
-              log.error(
+              log.warn(
                   "Validation error: Field='{}', Message='{}'",
                   error.getField(),
                   error.getDefaultMessage());
